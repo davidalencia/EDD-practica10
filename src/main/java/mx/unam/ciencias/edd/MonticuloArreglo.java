@@ -37,7 +37,14 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      * @param n el número de elementos en el iterable.
      */
     public MonticuloArreglo(Iterable<T> iterable, int n) {
-        // Aquí va su código.
+        this.elementos = n;
+        arreglo = nuevoArreglo(n);
+        int alfa = 0;
+        for (T e: iterable){
+          e.setIndice(alfa);
+          arreglo[alfa++] = e;
+        }
+
     }
 
     /**
@@ -46,7 +53,19 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      * @throws IllegalStateException si el montículo es vacío.
      */
     @Override public T elimina() {
-        // Aquí va su código.
+        if(elementos == 0)
+          throw new IllegalStateException();
+        int alfa = -1;
+        while(arreglo[++alfa] == null);
+        for(int omega = 0; omega<arreglo.length; omega++)
+          if(arreglo[omega]!=null && arreglo[omega].compareTo(arreglo[alfa])<0){
+            alfa=omega;
+          }
+        elementos--;
+        T e = arreglo[alfa];
+        arreglo[alfa]=null;
+        e.setIndice(-1);
+        return e;
     }
 
     /**
@@ -57,7 +76,9 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      *         que el número de elementos.
      */
     @Override public T get(int i) {
-        // Aquí va su código.
+      if(i<0 || i>= elementos)
+        throw new NoSuchElementException();
+      return arreglo[i];
     }
 
     /**
@@ -66,7 +87,9 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      *         <tt>false</tt> en otro caso.
      */
     @Override public boolean esVacia() {
-        // Aquí va su código.
+        if(elementos<1)
+          return true;
+        return false;
     }
 
     /**
@@ -74,6 +97,6 @@ public class MonticuloArreglo<T extends ComparableIndexable<T>>
      * @return el número de elementos en el montículo.
      */
     @Override public int getElementos() {
-        // Aquí va su código.
+        return elementos;
     }
 }

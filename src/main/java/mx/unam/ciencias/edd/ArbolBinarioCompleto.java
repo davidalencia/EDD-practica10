@@ -18,17 +18,21 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
 
         /* Inicializa al iterador. */
         public Iterador() {
-            // Aquí va su código.
+          cola = new Cola<Vertice>();
+          if(raiz!=null)
+            cola.mete(raiz);
         }
 
         /* Nos dice si hay un elemento siguiente. */
         @Override public boolean hasNext() {
-            // Aquí va su código.
+            return !cola.esVacia();
         }
 
         /* Regresa el siguiente elemento en orden BFS. */
         @Override public T next() {
-            // Aquí va su código.
+            Vertice v = cola.saca();
+            avanzaCola(cola, v);
+            return v.elemento;
         }
     }
 
@@ -56,7 +60,34 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      *         <code>null</code>.
      */
     @Override public void agrega(T elemento) {
-        // Aquí va su código.
+      if(elemento==null)
+        throw new IllegalArgumentException();
+      if(raiz==null)
+        raiz = nuevoVertice(elemento);
+      int h = altura(), n = elementos;
+      Vertice v = raiz;
+      while(n>2){
+        boolean p = pow2(h+1)==n+1,  q = n+1-pow2(h)< pow2(h-1);
+        if(p||q){//lleno o izq
+          v=v.izquierdo;
+          n= p? n-pow2(h):n-pow2(h-1); //lleno? lleno: izq
+        }
+        else{//derecho
+          v=v.derecho;
+          n=n-pow2(h);
+        }
+        h--;
+      }
+      Vertice nuevo = nuevoVertice(elemento);
+      if(n==1)
+        v.izquierdo = nuevo;
+      if(n==2)
+        v.derecho = nuevo;
+      nuevo.padre = v;
+      elementos++;
+    }
+    private int pow2(int h){
+      return (int) Math.floor(Math.pow(2, h));
     }
 
     /**
@@ -66,16 +97,44 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @param elemento el elemento a eliminar.
      */
     @Override public void elimina(T elemento) {
-        // Aquí va su código.
+      if(raiz==null  || elemento==null)
+        return;
+      Vertice v= (Vertice) busca(elemento);
+      if(v==null)
+        return ;
+      if(elementos==1){
+    	  raiz=null;
+    	  elementos--;
+    	  return;
+      }
+      Cola<Vertice> cola = new Cola<>();
+      Vertice cambia = raiz;
+      cola.mete(raiz);
+      while(!cola.esVacia()){
+    	  cambia = cola.saca();
+    	  avanzaCola(cola, cambia);
+      }
+      v.elemento =cambia.elemento;
+      eliminaHoja(cambia);
+      elementos--;
+    }
+    private void eliminaHoja(Vertice v){
+      if(v.padre.izquierdo==v)
+        v.padre.izquierdo=null;
+      else
+        v.padre.derecho=null;
     }
 
     /**
-     * Regresa la altura del árbol. La altura de un árbol binario completo
+     * Regresa la altura
+del árbol. La altura de un árbol binario completo
      * siempre es ⌊log<sub>2</sub><em>n</em>⌋.
      * @return la altura del árbol.
      */
     @Override public int altura() {
-        // Aquí va su código.
+      if(raiz==null)
+        return -1;
+      return (int) Math.floor(Math.log(elementos)/Math.log(2));
     }
 
     /**
@@ -84,7 +143,16 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      * @param accion la acción a realizar en cada elemento del árbol.
      */
     public void bfs(AccionVerticeArbolBinario<T> accion) {
-        // Aquí va su código.
+      if(raiz==null)
+	     return;
+    	Cola<Vertice> cola = new Cola<>();
+    	cola.mete(raiz);
+    	while(!cola.esVacia()){
+    	    Vertice v = cola.saca();
+    	    avanzaCola(cola, v);
+    	    accion.actua(v);
+	    }
+
     }
 
     /**
@@ -93,5 +161,12 @@ public class ArbolBinarioCompleto<T> extends ArbolBinario<T> {
      */
     @Override public Iterator<T> iterator() {
         return new Iterador();
+    }
+
+    private void avanzaCola(Cola<Vertice> c, Vertice v){
+      if(v.izquierdo!=null)
+        c.mete(v.izquierdo);
+      if(v.derecho!=null)
+        c.mete(v.derecho);
     }
 }

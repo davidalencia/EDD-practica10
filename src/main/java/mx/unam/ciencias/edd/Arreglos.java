@@ -18,7 +18,24 @@ public class Arreglos {
      */
     public static <T> void
     quickSort(T[] arreglo, Comparator<T> comparador) {
-        // Aquí va su código.
+      quickSort(arreglo, comparador, arreglo.length-1, 0, arreglo.length-1);
+    }
+    private static <T> void
+    quickSort(T[] a, Comparator<T> c, int pib, int izq, int der){
+      if(pib <= izq)
+        return;
+      while(c.compare(a[izq], a[pib]) < 0)
+        izq++;
+      while(c.compare(a[der], a[pib]) >= 0){
+          if(der--==izq){
+            swap(a, izq, pib);
+            quickSort(a, c, der, 0, der); //izq
+            quickSort(a, c, pib, izq+1, pib); //der
+            return;
+          }
+      }
+      swap(a, izq, der);
+      quickSort(a, c, pib, izq, der);
     }
 
     /**
@@ -39,7 +56,14 @@ public class Arreglos {
      */
     public static <T> void
     selectionSort(T[] arreglo, Comparator<T> comparador) {
-        // Aquí va su código.
+      for (int alfa=0; alfa<arreglo.length; alfa++) {
+        int min = alfa;
+        for (int beta=alfa; beta<arreglo.length; beta++)
+          if(comparador.compare(arreglo[beta], arreglo[min]) < 0)
+            min = beta;
+
+        swap(arreglo, alfa, min);
+      }
     }
 
     /**
@@ -63,7 +87,21 @@ public class Arreglos {
      */
     public static <T> int
     busquedaBinaria(T[] arreglo, T elemento, Comparator<T> comparador) {
-        // Aquí va su código.
+      if(arreglo.length < 1)
+            return -1;
+      return busquedaBinaria(arreglo, elemento, comparador, 0, arreglo.length-1);
+    }
+    private static <T> int
+    busquedaBinaria(T[] arreglo, T elemento, Comparator<T> comparador, int inicio, int fin) {
+        int raiz = (int) inicio+((fin-inicio)/2);
+        if (comparador.compare(elemento, arreglo[raiz]) == 0)
+          return raiz;
+        if((fin-inicio) == 0 || fin < 0)
+          return -1;
+        if (comparador.compare(elemento, arreglo[raiz]) < 0)
+          return busquedaBinaria(arreglo, elemento, comparador, inicio, raiz-1);
+
+        return busquedaBinaria(arreglo, elemento, comparador, raiz+1, fin);
     }
 
     /**
@@ -77,5 +115,11 @@ public class Arreglos {
     public static <T extends Comparable<T>> int
     busquedaBinaria(T[] arreglo, T elemento) {
         return busquedaBinaria(arreglo, elemento, (a, b) -> a.compareTo(b));
+    }
+
+    private static <T> void swap(T[] a, int izq, int der){
+      T swap = a[izq];
+      a[izq] = a[der];
+      a[der] = swap;
     }
 }

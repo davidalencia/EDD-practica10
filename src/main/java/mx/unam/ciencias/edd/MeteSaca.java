@@ -22,7 +22,7 @@ public abstract class MeteSaca<T> {
          * @param elemento el elemento del nodo.
          */
         public Nodo(T elemento) {
-            // Aquí va su código.
+            this.elemento = elemento;
         }
     }
 
@@ -43,7 +43,11 @@ public abstract class MeteSaca<T> {
      * @throws NoSuchElementException si la estructura está vacía.
      */
     public T saca() {
-        // Aquí va su código.
+        if(cabeza==null)
+          throw new NoSuchElementException();
+        T r = cabeza.elemento;
+        cabeza = cabeza.siguiente;
+        return r;
     }
 
     /**
@@ -53,7 +57,9 @@ public abstract class MeteSaca<T> {
      * @throws NoSuchElementException si la estructura está vacía.
      */
     public T mira() {
-        // Aquí va su código.
+      if(cabeza==null)
+        throw new NoSuchElementException();
+      return cabeza.elemento;
     }
 
     /**
@@ -62,7 +68,7 @@ public abstract class MeteSaca<T> {
      *         <tt>false</tt> en otro caso.
      */
     public boolean esVacia() {
-        // Aquí va su código.
+        return cabeza == null;
     }
 
     /**
@@ -75,7 +81,17 @@ public abstract class MeteSaca<T> {
     @Override public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass())
             return false;
-        @SuppressWarnings("unchecked") MeteSaca<T> m = (MeteSaca<T>)object;
-        // Aquí va su código.
+        MeteSaca ms = (MeteSaca) object;
+        return equals(cabeza, ms.cabeza);
     }
+    private boolean equals(MeteSaca.Nodo n, MeteSaca.Nodo otroN){
+      if(n==null)
+        return true;
+      if(otroN==null)
+        return false;
+      return (n.elemento.equals(otroN.elemento))?
+        equals(n.siguiente, otroN.siguiente):
+        false;
+    }
+
 }
