@@ -37,19 +37,31 @@ public class Diccionario<K, V> implements Iterable<V> {
          * diccionario. */
         public Iterador() {
             indice = 0;
-            while(indice<entradas.length-1 && entradas[indice]==null)
+            while(indice<entradas.length && entradas[indice]==null)
               indice++;
+            Lista<Entrada> l= new Lista<Entrada>();
+            iterador = l.iterator();
         }
 
         /* Nos dice si hay una siguiente entrada. */
         public boolean hasNext() {
-          if(entradas[indice]!=null && )
-          return iterador.hasNext();
+          return indice<entradas.length || iterador.hasNext();
         }
 
         /* Regresa la siguiente entrada. */
         public Entrada siguiente() {
+          if(!iterador.hasNext() && indice!=entradas.length)
+            actualiza();
+          if(iterador.hasNext())
+            return iterador.next();
           return null;
+        }
+
+        private void actualiza(){
+          if(indice<entradas.length && entradas[indice]!=null)
+            iterador = entradas[indice++].iterator();
+          while(indice<entradas.length && entradas[indice]==null)
+            indice++;
         }
     }
 
@@ -59,7 +71,7 @@ public class Diccionario<K, V> implements Iterable<V> {
 
         /* Regresa el siguiente elemento. */
         @Override public K next() {
-          Entrada e = (Entrada) super.siguiente();
+          Entrada e = (Entrada) siguiente();
 	        return (e!=null)? e.llave: null;
         }
     }
@@ -70,7 +82,7 @@ public class Diccionario<K, V> implements Iterable<V> {
 
         /* Regresa el siguiente elemento. */
         @Override public V next() {
-          Entrada e = (Entrada) super.siguiente();
+          Entrada e = (Entrada) siguiente();
           return (e!=null)? e.valor: null;
         }
     }
@@ -166,10 +178,6 @@ public class Diccionario<K, V> implements Iterable<V> {
     	    entradas[i] = new Lista<Entrada>();
 
       entradas[i].agrega(new Entrada(llave, valor));
-    }
-
-    public int cap(){
-      return entradas.length;
     }
 
     /**
@@ -299,8 +307,7 @@ public class Diccionario<K, V> implements Iterable<V> {
             return false;
         @SuppressWarnings("unchecked") Diccionario<K, V> d =
             (Diccionario<K, V>)o;
-        // Aquí va su código.
-	      return false;
+        return false;
     }
 
     /**
