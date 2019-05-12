@@ -291,8 +291,15 @@ public class Diccionario<K, V> implements Iterable<V> {
      * @return una representación en cadena del diccionario.
      */
     @Override public String toString() {
-        // Aquí va su código.
-	      return "";
+      if(elementos==0)
+        return "{}";
+      String s = "{ ";
+      Iterador i = new Iterador();
+      while(i.hasNext()){
+        Entrada e = i.siguiente();
+        s += String.format("'%s': '%s', ", e.llave.toString(), e.valor.toString());
+      }
+      return s+"}";
     }
 
     /**
@@ -307,7 +314,13 @@ public class Diccionario<K, V> implements Iterable<V> {
             return false;
         @SuppressWarnings("unchecked") Diccionario<K, V> d =
             (Diccionario<K, V>)o;
-        return false;
+        Iterator este = iterator(), ese = d.iterator();
+        while(este.hasNext() && ese.hasNext())
+          if(!este.next().equals(ese.next()))
+            return false;
+
+        return true;
+
     }
 
     /**
