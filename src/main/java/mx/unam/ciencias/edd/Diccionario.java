@@ -314,13 +314,13 @@ public class Diccionario<K, V> implements Iterable<V> {
             return false;
         @SuppressWarnings("unchecked") Diccionario<K, V> d =
             (Diccionario<K, V>)o;
-        Iterator este = iterator(), ese = d.iterator();
-        while(este.hasNext() && ese.hasNext())
-          if(!este.next().equals(ese.next()))
+        if(elementos!=d.elementos)
+          return false;
+        Iterador i = new Iterador();
+        while(i.hasNext())
+          if(!d.contiene(i.siguiente().llave))
             return false;
-
         return true;
-
     }
 
     /**
